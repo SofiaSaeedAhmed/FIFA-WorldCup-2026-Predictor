@@ -121,7 +121,7 @@ A knockout bracket is path-dependent — who Argentina faces in the QF depends o
 
 ```bash
 git clone https://github.com/SofiaSaeedAhmed/FIFA-WorldCup-Predictor.git
-cd FIFA-WorldCup-Predictor
+cd FIFA-WorldCup-2026-Predictor
 pip install -r requirements.txt
 streamlit run app.py
 ```
