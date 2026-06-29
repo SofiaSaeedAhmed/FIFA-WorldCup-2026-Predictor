@@ -6,7 +6,7 @@ An end-to-end data science project that predicts match outcomes for the 2026 FIF
 
 ## Live App
 
-🌐 **[View the App →](https://fifa-worldcup2026-predictor.streamlit.app/)**
+🌐 **[View the App →](https://fifa-worldcup2026predictor.streamlit.app/)**
 
 ---
 
