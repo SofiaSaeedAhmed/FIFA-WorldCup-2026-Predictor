@@ -107,4 +107,30 @@ A knockout bracket is path-dependent — who Argentina faces in the QF depends o
 
 ---
 
-## Project Structure
+## Notebooks
+
+| Notebook | Contents |
+|---|---|
+| `01_eda.ipynb` | Dataset exploration, result distributions, home advantage analysis |
+| `02_model.ipynb` | Feature engineering, XGBoost training, confusion matrix, SHAP analysis |
+| `03_predict.ipynb` | Applying the model to all 72 group stage fixtures, accuracy tracking |
+
+---
+
+## Running Locally
+
+```bash
+git clone https://github.com/SofiaSaeedAhmed/FIFA-WorldCup-Predictor.git
+cd FIFA-WorldCup-Predictor
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+---
+
+## Author
+
+**Sofia Saeed Ahmed**  
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-sofia--saeed--ahmed-0a66c2?style=flat&logo=linkedin)](https://www.linkedin.com/in/sofia-saeed-ahmed/)
+[![GitHub](https://img.shields.io/badge/GitHub-SofiaSaeedAhmed-333?style=flat&logo=github)](https://github.com/SofiaSaeedAhmed)
+[![Email](https://img.shields.io/badge/Email-sofiasaeed23@gmail.com-ea4335?style=flat&logo=gmail)](mailto:sofiasaeed23@gmail.com)
