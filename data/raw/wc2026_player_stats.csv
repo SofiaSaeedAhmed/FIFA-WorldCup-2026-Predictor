@@ -1,0 +1,44 @@
+player,team,goals,assists,shots_total,shots_on_target,yellow_cards,red_cards,clean_sheets,saves,goals_plus_assists
+Lionel Messi,Argentina,5.0,0.0,13.0,8.0,0,0,,,5.0
+Erling Haaland,Norway,4.0,0.0,10.0,7.0,0,0,,,4.0
+Kylian Mbappé,France,4.0,0.0,12.0,7.0,0,0,,,4.0
+Vinicius Júnior,Brazil,4.0,0.0,12.0,8.0,0,0,,,4.0
+Ismael Saibari,Morocco,3.0,0.0,10.0,,0,0,,,3.0
+Brian Brobbey,Netherlands,3.0,0.0,,,0,0,,,3.0
+Johan Manzambi,Switzerland,3.0,0.0,,,0,0,,,3.0
+Jonathan David,Canada,3.0,3.0,13.0,6.0,0,0,,,6.0
+Matheus Cunha,Brazil,3.0,0.0,,,0,0,,,3.0
+Deniz Undav,Germany,3.0,2.0,,,0,0,,,5.0
+Harry Kane,England,2.0,0.0,10.0,,0,0,,,2.0
+Cristiano Ronaldo,Portugal,2.0,0.0,10.0,5.0,0,0,,,2.0
+Maxi Araújo,Uruguay,2.0,0.0,,,0,0,,,2.0
+Elijah Just,New Zealand,2.0,0.0,,,0,0,,,2.0
+Ismaila Sarr,Senegal,2.0,0.0,,,0,0,,,2.0
+Folarin Balogun,United States,2.0,0.0,,,0,1,,,2.0
+Mikel Oyarzabal,Spain,2.0,0.0,10.0,,0,0,,,2.0
+Daniel Muñoz,Colombia,2.0,0.0,,,0,0,,,2.0
+Nicolas Pépé,Côte d'Ivoire,2.0,0.0,,,0,1,,,2.0
+Caleb Yirenkyi,Ghana,1.0,0.0,,,0,0,,,1.0
+Mohamed Salah,Egypt,1.0,2.0,,,0,0,,,3.0
+Bruno Guimarães,Brazil,0.0,3.0,,,0,0,,,3.0
+Alexander Isak,Sweden,0.0,3.0,,,0,0,,,3.0
+Michael Olise,France,0.0,3.0,,,0,0,,,3.0
+Breel Embolo,Switzerland,0.0,2.0,,,0,0,,,2.0
+Joshua Kimmich,Germany,0.0,2.0,,,0,0,,,2.0
+Martin Ødegaard,Norway,0.0,2.0,,,0,0,,,2.0
+Kenan Yıldız,Türkiye,0.0,0.0,14.0,,0,0,,,0.0
+Arda Güler,Türkiye,0.0,0.0,12.0,,0,0,,,0.0
+Viktor Gyökeres,Sweden,0.0,0.0,11.0,5.0,0,1,,,0.0
+Raúl Rangel,Mexico,,,,,0,0,3.0,,0.0
+Eloy Room,Curaçao,,,,,0,0,,20.0,0.0
+Mohammed Al-Owais,Saudi Arabia,,,,,0,0,,14.0,0.0
+Orlando Gill,Paraguay,,,,,0,0,2.0,13.0,0.0
+Alireza Beiranvand,IR Iran,,,,,0,0,,13.0,0.0
+Alisson,Brazil,,,,,0,0,2.0,10.0,0.0
+Emiliano Martínez,Argentina,,,,,0,0,2.0,,0.0
+Unai Simón,Spain,,,,,0,0,2.0,,0.0
+Benjamin Asare,Ghana,,,,,0,0,2.0,,0.0
+Thibaut Courtois,Belgium,,,,,0,0,,,0.0
+Andrés Cubas,Paraguay,0.0,0.0,,,0,0,,,0.0
+César Montes,Mexico,0.0,0.0,,,0,1,,,0.0
+Stephen Eustáquio,Canada,0.0,0.0,,,0,0,,,0.0

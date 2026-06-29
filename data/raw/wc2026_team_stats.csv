@@ -1,0 +1,49 @@
+group,team,mp,w,d,l,gf,ga,gd,pts,status,top_scorer,goalkeeper,goals_per_game,goals_conceded_per_game
+A,Mexico,3,3,0,0,6,0,6,9,GR,Julián Quiñones,Raúl Rangel,2.0,0.0
+A,South Africa,3,1,1,1,2,3,-1,4,R32,Teboho Mokoena / Thapelo Maseko,Ronwen Williams,0.67,1.0
+A,Korea Republic,3,1,0,2,2,3,-1,3,OUT,Hwang In-beom / Oh Hyeon-gyu,Kim Seung-gyu,0.67,1.0
+A,Czechia,3,0,1,2,2,6,-4,1,OUT,Ladislav Krejčí / Michal Sadílek,Matej Kovar,0.67,2.0
+B,Switzerland,3,2,1,0,7,3,4,7,GR,Johan Manzambi,Gregor Kobel,2.33,1.0
+B,Canada,3,1,1,1,8,3,5,4,R32,Jonathan David,Maxime Crépeau,2.67,1.0
+B,Bosnia & Herz.,3,1,1,1,5,6,-1,4,R32,Ermin Mahmić,Nikola Vasilj,1.67,2.0
+B,Qatar,3,0,1,2,2,10,-8,1,OUT,Hassan Al-Haydos / Boualem Khoukhi,Mahmoud Abunada,0.67,3.33
+C,Brazil,3,2,1,0,7,1,6,7,R32,Vinicius Júnior,Alisson,2.33,0.33
+C,Morocco,3,2,1,0,6,3,3,7,R32,Ismael Saibari,Yassine Bounou,2.0,1.0
+C,Scotland,3,1,0,2,1,4,-3,3,OUT,John McGinn,Angus Gunn,0.33,1.33
+C,Haiti,3,0,0,3,2,8,-6,0,OUT,Wilson Isidor,Johny Placide,0.67,2.67
+D,United States,3,2,0,1,8,4,4,6,R32,Folarin Balogun,Matt Freese,2.67,1.33
+D,Australia,3,1,1,1,2,2,0,4,R32,Connor Metcalfe / Nestory Irankunda,Patrick Beach,0.67,0.67
+D,Paraguay,3,1,1,1,2,4,-2,4,OUT,Matías Galarza / Mauricio,Orlando Gill,0.67,1.33
+D,Türkiye,3,1,0,2,3,5,-2,3,OUT,Kaan Ayhan / Barış Alper Yılmaz,Uğurcan Çakır,1.0,1.67
+E,Germany,3,2,0,1,10,4,6,6,GR,Deniz Undav,Manuel Neuer,3.33,1.33
+E,Côte d'Ivoire,3,2,0,1,4,2,2,6,GR,Nicolas Pépé,Yahia Fofana,1.33,0.67
+E,Ecuador,3,1,1,1,2,2,0,4,OUT,Gonzalo Plata / Nilson Angulo,Hernán Galíndez,0.67,0.67
+E,Curaçao,3,0,1,2,1,9,-8,1,OUT,Livano Comenencia,Eloy Room,0.33,3.0
+F,Netherlands,3,2,1,0,10,4,6,7,R32,Brian Brobbey,Bart Verbruggen,3.33,1.33
+F,Japan,3,1,2,0,7,3,4,5,R32,Daichi Kamada / Ayase Ueda,Zion Suzuki,2.33,1.0
+F,Sweden,3,1,1,1,7,7,0,4,OUT,Anthony Elanga / Yasin Ayari,Kristoffer Nordfeldt,2.33,2.33
+F,Tunisia,3,0,0,3,2,12,-10,0,OUT,Omar Rekik / Hazem Mastouri,Aymen Dahmen,0.67,4.0
+G,Egypt,2,1,1,0,4,2,2,4,GR,Mohamed Salah / Trézéguet,Mostafa Shobeir,2.0,1.0
+G,IR Iran,2,0,2,0,2,2,0,2,GR,Ramin Rezaeian / Mohammad Mohebi,Alireza Beiranvand,1.0,1.0
+G,Belgium,2,0,2,0,1,1,0,2,OUT,,Thibaut Courtois,0.5,0.5
+G,New Zealand,2,0,1,1,3,5,-2,1,OUT,Elijah Just,Max Crocombe,1.5,2.5
+H,Spain,2,1,1,0,4,0,4,4,GR,Mikel Oyarzabal,Unai Simón,2.0,0.0
+H,Uruguay,2,0,2,0,3,3,0,2,GR,Maxi Araújo,Fernando Muslera,1.5,1.5
+H,Cabo Verde,2,0,2,0,2,2,0,2,OUT,Kevin Pina / Hélio Varela,Vozinha,1.0,1.0
+H,Saudi Arabia,2,0,1,1,1,5,-4,1,OUT,Abdulelah Al-Amri,Mohammed Al-Owais,0.5,2.5
+I,France,2,2,0,0,6,1,5,6,GR,Kylian Mbappé,Mike Maignan,3.0,0.5
+I,Norway,2,2,0,0,7,3,4,6,GR,Erling Haaland,Ørjan Nyland,3.5,1.5
+I,Senegal,2,0,0,2,3,6,-3,0,OUT,Ismaila Sarr,Édouard Mendy,1.5,3.0
+I,Iraq,2,0,0,2,1,7,-6,0,OUT,Ayman Hussein,Jalal Hassan / Ahmed Basil,0.5,3.5
+J,Argentina,2,2,0,0,5,0,5,6,GR,Lionel Messi,Emiliano Martínez,2.5,0.0
+J,Austria,2,1,0,1,3,3,0,3,GR,Marko Arnautović / Romano Schmid,Alexander Schlager,1.5,1.5
+J,Algeria,2,1,0,1,2,4,-2,3,OUT,Amine Gouiri / Nadhir Benbouali,Luca Zidane,1.0,2.0
+J,Jordan,2,0,0,2,2,5,-3,0,OUT,Ali Olwan / Nizar Al Rashdan,Yazeed Abulaila,1.0,2.5
+K,Colombia,2,2,0,0,4,1,3,6,GR,Daniel Muñoz,Camilo Vargas,2.0,0.5
+K,Portugal,2,1,1,0,6,1,5,4,GR,Cristiano Ronaldo,Diogo Costa,3.0,0.5
+K,Congo DR,2,0,1,1,1,2,-1,1,OUT,Yoane Wissa,Lionel Mpasi,0.5,1.0
+K,Uzbekistan,2,0,0,2,1,8,-7,0,OUT,Abbosbek Fayzullayev,Utkir Yusupov / Abduvohid Nematov,0.5,4.0
+L,England,2,1,1,0,4,2,2,4,R32,Harry Kane,Jordan Pickford,2.0,1.0
+L,Ghana,2,1,1,0,1,0,1,4,R32,Caleb Yirenkyi,Benjamin Asare,0.5,0.0
+L,Croatia,2,1,0,1,3,4,-1,3,OUT,Ante Budimir / Petar Musa,Dominik Livaković,1.5,2.0
+L,Panama,2,0,0,2,0,2,-2,0,OUT,,Orlando Mosquera,0.0,1.0
