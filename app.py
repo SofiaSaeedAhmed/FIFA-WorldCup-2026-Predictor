@@ -1756,8 +1756,149 @@ def show_knockout():
                     <div style="font-size:12px;color:#94a3b8;margin-top:4px">{mc_val(champion, "pct_win_title")} chance</div>
                 </div>""", unsafe_allow_html=True)
 
+    elif selected_stage == "R16":
+        mc_r16_path = Path("data/processed/monte_carlo_r16.csv")
+        if not mc_r16_path.exists():
+            st.warning("R16 Monte Carlo results not found. Run `notebooks/04_monte_carlo.ipynb` R16 cells first.")
+        else:
+            mc16 = pd.read_csv(mc_r16_path)
+
+            def mc16_val(team, col):
+                row = mc16[mc16["team"] == team]
+                return f"{row[col].values[0]:.1f}%" if len(row) else "—"
+
+            def mc16_float(team, col):
+                row = mc16[mc16["team"] == team]
+                return float(row[col].values[0]) if len(row) else 0.0
+
+            def pw16(t1, t2, col):
+                return t1 if mc16_float(t1, col) >= mc16_float(t2, col) else t2
+
+            R16_actual = [
+                ("Morocco",      "Canada",      "R16_01"),
+                ("France",       "Paraguay",    "R16_02"),
+                ("USA",          "Belgium",     "R16_03"),
+                ("Portugal",     "Spain",       "R16_04"),
+                ("Norway",       "Brazil",      "R16_05"),
+                ("Mexico",       "England",     "R16_06"),
+                ("Switzerland",  "Colombia",    "R16_07"),
+                ("Argentina",    "Egypt",       "R16_08"),
+            ]
+
+            QF_LABELS = {
+                ("R16_01","R16_02"): "QF Match A",
+                ("R16_03","R16_04"): "QF Match B",
+                ("R16_05","R16_06"): "QF Match C",
+                ("R16_07","R16_08"): "QF Match D",
+            }
+
+            r16w = {mid: pw16(h, a, "pct_reach_QF") for h, a, mid in R16_actual}
+            QF_pred16 = [
+                (r16w["R16_01"], r16w["R16_02"], "QF_01", "SF Match 1"),
+                (r16w["R16_03"], r16w["R16_04"], "QF_02", "SF Match 2"),
+                (r16w["R16_05"], r16w["R16_06"], "QF_03", "SF Match 3"),
+                (r16w["R16_07"], r16w["R16_08"], "QF_04", "SF Match 4"),
+            ]
+            qfw16 = {mid: pw16(h, a, "pct_reach_SF") for h, a, mid, _ in QF_pred16}
+            SF_pred16 = [
+                (qfw16["QF_01"], qfw16["QF_02"], "SF_01", "Final Match 1"),
+                (qfw16["QF_03"], qfw16["QF_04"], "SF_02", "Final Match 2"),
+            ]
+            sfw16 = {mid: pw16(h, a, "pct_reach_Final") for h, a, mid, _ in SF_pred16}
+
+            def render_card16(col, home, away, mid, stat_col, stat_label):
+                with col:
+                    h_stat = mc16_val(home, stat_col); a_stat = mc16_val(away, stat_col)
+                    h_win = mc16_val(home, "pct_win_title"); a_win = mc16_val(away, "pct_win_title")
+                    st.markdown(f"""
+                    <div style="background:white;border:1px solid #e2e8f0;border-radius:14px;padding:20px 24px;box-shadow:0 2px 8px rgba(13,27,42,.06)">
+                        <div style="font-size:10px;font-weight:700;color:#94a3b8;margin-bottom:14px">{mid}</div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+                            <div style="text-align:center;flex:1">
+                                <div style="font-size:28px">{flag(home)}</div>
+                                <div style="font-size:13px;font-weight:700;color:#0d1b2a;margin-top:4px">{esc(home)}</div>
+                                <div style="font-size:11px;color:#94a3b8;margin-top:2px">{stat_label}: {h_stat} · Title: {h_win}</div>
+                            </div>
+                            <div style="font-size:16px;font-weight:900;color:#cbd5e1">VS</div>
+                            <div style="text-align:center;flex:1">
+                                <div style="font-size:28px">{flag(away)}</div>
+                                <div style="font-size:13px;font-weight:700;color:#0d1b2a;margin-top:4px">{esc(away)}</div>
+                                <div style="font-size:11px;color:#94a3b8;margin-top:2px">{stat_label}: {a_stat} · Title: {a_win}</div>
+                            </div>
+                        </div>
+                    </div>""", unsafe_allow_html=True)
+
+            def render_grid16(pairs, stat_col, stat_label, group_label_fn=None):
+                for i in range(0, len(pairs), 2):
+                    batch = pairs[i:i+2]
+                    if group_label_fn:
+                        _sp0, col_label, _sp3 = st.columns([0.5, 10, 0.5])
+                        with col_label:
+                            st.markdown(f'<div style="font-size:13px;font-weight:900;letter-spacing:1.5px;color:#f5c518;margin:36px 0 20px;text-transform:uppercase;border-left:3px solid #f5c518;padding-left:12px">{group_label_fn(i)} — Winner advances</div>', unsafe_allow_html=True)
+                    _, c1, c2, _ = st.columns([0.5, 5, 5, 0.5], gap="medium")
+                    render_card16(c1, batch[0][0], batch[0][1], batch[0][2], stat_col, stat_label)
+                    if len(batch) > 1:
+                        render_card16(c2, batch[1][0], batch[1][1], batch[1][2], stat_col, stat_label)
+
+            sub_stages_r16 = ["R16 Matchups", "Predicted QF", "Predicted SF", "Predicted Final"]
+            if "ko_sub_r16" not in st.session_state:
+                st.session_state.ko_sub_r16 = 0
+            sub_idx16 = st.session_state.ko_sub_r16
+
+            dots_html16 = "".join([
+                f'<div style="width:9px;height:9px;border-radius:50%;background:{"#f5c518" if i==sub_idx16 else "#cbd5e1"};margin:0 3px;display:inline-block"></div>'
+                for i in range(len(sub_stages_r16))
+            ])
+            st.markdown("<div style='margin-top:20px'></div>", unsafe_allow_html=True)
+            _, sa, sb, sc, _ = st.columns([2, 1, 6, 1, 2])
+            with sa:
+                if sub_idx16 > 0 and st.button("←", key="r16_sub_prev"):
+                    st.session_state.ko_sub_r16 -= 1; st.rerun()
+            with sb:
+                st.markdown(f'<div style="text-align:center;padding-top:10px">{dots_html16}<span style="font-size:12px;color:#94a3b8;margin-left:10px">{sub_stages_r16[sub_idx16]}</span></div>', unsafe_allow_html=True)
+            with sc:
+                if sub_idx16 < len(sub_stages_r16)-1 and st.button("→", key="r16_sub_next"):
+                    st.session_state.ko_sub_r16 += 1; st.rerun()
+
+            sub_idx16 = st.session_state.ko_sub_r16
+
+            if sub_idx16 == 0:
+                for i in range(0, len(R16_actual), 2):
+                    m1 = R16_actual[i]; m2 = R16_actual[i+1]
+                    label = QF_LABELS.get((m1[2], m2[2]), "")
+                    _sp0, col_label, _sp3 = st.columns([0.5, 10, 0.5], gap="small")
+                    with col_label:
+                        st.markdown(f'<div style="font-size:13px;font-weight:900;letter-spacing:1.5px;color:#f5c518;margin:36px 0 20px;text-transform:uppercase;border-left:3px solid #f5c518;padding-left:12px">{label} — Winner advances</div>', unsafe_allow_html=True)
+                    _, c1, c2, _ = st.columns([0.5, 5, 5, 0.5], gap="medium")
+                    render_card16(c1, m1[0], m1[1], m1[2], "pct_reach_QF", "QF")
+                    render_card16(c2, m2[0], m2[1], m2[2], "pct_reach_QF", "QF")
+
+            elif sub_idx16 == 1:
+                qf_group_labels = ["QF Match A", "QF Match B", "QF Match C", "QF Match D"]
+                render_grid16(QF_pred16, "pct_reach_SF", "SF", lambda i: qf_group_labels[i//2 * 2 // 2])
+
+            elif sub_idx16 == 2:
+                render_grid16(SF_pred16, "pct_reach_Final", "Final", lambda i: f"Final Match {i//2 + 1}")
+
+            elif sub_idx16 == 3:
+                fin_home16, fin_away16 = sfw16["SF_01"], sfw16["SF_02"]
+                champion16 = pw16(fin_home16, fin_away16, "pct_win_title")
+                _sp0, col_label, _sp3 = st.columns([0.5, 10, 0.5])
+                with col_label:
+                    st.markdown('<div style="font-size:13px;font-weight:900;letter-spacing:1.5px;color:#f5c518;margin:36px 0 20px;text-transform:uppercase;border-left:3px solid #f5c518;padding-left:12px">THE FINAL — Predicted Champion</div>', unsafe_allow_html=True)
+                _, c1, c_mid, c2, _ = st.columns([0.5, 4, 2, 4, 0.5], gap="medium")
+                render_card16(c1, fin_home16, fin_away16, "FINAL", "pct_win_title", "Title")
+                with c_mid:
+                    st.markdown(f"""
+                    <div style="text-align:center;padding-top:40px">
+                        <div style="font-size:11px;font-weight:800;letter-spacing:1px;color:#94a3b8;margin-bottom:8px">PREDICTED CHAMPION</div>
+                        <div style="font-size:36px">{flag(champion16)}</div>
+                        <div style="font-size:14px;font-weight:800;color:#f5c518;margin-top:6px">{esc(champion16)}</div>
+                        <div style="font-size:12px;color:#94a3b8;margin-top:4px">{mc16_val(champion16, "pct_win_title")} chance</div>
+                    </div>""", unsafe_allow_html=True)
+
     else:
-        label_map = {"R16": "Round of 16", "Quarter-Final": "Quarter-Final", "Semi-Final": "Semi-Final", "Final": "Final"}
+        label_map = {"Quarter-Final": "Quarter-Final", "Semi-Final": "Semi-Final", "Final": "Final"}
         st.markdown(f"""
         <div style="text-align:center;padding:80px 40px">
             <div style="font-size:48px;margin-bottom:16px">⏳</div>
@@ -1768,24 +1909,36 @@ def show_knockout():
             </div>
         </div>""", unsafe_allow_html=True)
 
+    # ── Decide which MC dataset to use for table + analytics ─────────────────
+    use_r16 = (selected_stage == "R16") and Path("data/processed/monte_carlo_r16.csv").exists()
+    active_mc = mc16 if use_r16 else mc
+    stage_label = "R16" if use_r16 else "R32"
+
     # ── Monte Carlo Results Table ─────────────────────────────────────────────
-    st.markdown("""
+    st.markdown(f"""
     <div style="margin-top:56px">
         <div class="sec-kicker">MONTE CARLO SIMULATION</div>
         <div class="sec-title">Tournament Win Probabilities</div>
         <div style="font-size:14px;color:#6b8dd6;line-height:1.7;margin-bottom:24px">
-            Based on 10,000 simulated tournaments. Each team's probability of reaching each stage.
+            Based on 10,000 simulated tournaments from the {stage_label} stage. Each team's probability of reaching each stage.
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-    display_cols = ["team", "pct_win_title", "pct_reach_Final", "pct_reach_SF", "pct_reach_QF", "pct_reach_R16"]
-    col_labels   = {"team": "Team", "pct_win_title": "🏆 Win Title", "pct_reach_Final": "Final",
-                    "pct_reach_SF": "Semi-Final", "pct_reach_QF": "Quarter-Final", "pct_reach_R16": "Round of 16"}
+    if use_r16:
+        display_cols = ["team", "pct_win_title", "pct_reach_Final", "pct_reach_SF", "pct_reach_QF"]
+        col_labels   = {"team": "Team", "pct_win_title": "🏆 Win Title", "pct_reach_Final": "Final",
+                        "pct_reach_SF": "Semi-Final", "pct_reach_QF": "Quarter-Final"}
+        pct_cols = ["🏆 Win Title", "Final", "Semi-Final", "Quarter-Final"]
+    else:
+        display_cols = ["team", "pct_win_title", "pct_reach_Final", "pct_reach_SF", "pct_reach_QF", "pct_reach_R16"]
+        col_labels   = {"team": "Team", "pct_win_title": "🏆 Win Title", "pct_reach_Final": "Final",
+                        "pct_reach_SF": "Semi-Final", "pct_reach_QF": "Quarter-Final", "pct_reach_R16": "Round of 16"}
+        pct_cols = ["🏆 Win Title", "Final", "Semi-Final", "Quarter-Final", "Round of 16"]
 
-    table_df = mc[display_cols].copy().rename(columns=col_labels)
+    table_df = active_mc[display_cols].copy().rename(columns=col_labels)
     table_df["Team"] = table_df["Team"].apply(lambda t: f"{FLAGS.get(t,'🏳')} {t}")
-    for c in ["🏆 Win Title", "Final", "Semi-Final", "Quarter-Final", "Round of 16"]:
+    for c in pct_cols:
         table_df[c] = table_df[c].apply(lambda x: f"{x}%")
 
     st.dataframe(table_df, use_container_width=True, hide_index=True)
@@ -1798,18 +1951,19 @@ def show_knockout():
     </div>
     """, unsafe_allow_html=True)
 
-    # Chart 1: Top 10 win probabilities
-    top10 = mc.nlargest(10, "pct_win_title").iloc[::-1]
+    # Chart 1: Top title probabilities
+    n_teams = len(active_mc)
+    top_n = active_mc.nlargest(min(10, n_teams), "pct_win_title").iloc[::-1]
     fig1 = go.Figure(go.Bar(
-        x=top10["pct_win_title"],
-        y=[f"{FLAGS.get(t,'🏳')} {t}" for t in top10["team"]],
+        x=top_n["pct_win_title"],
+        y=[f"{FLAGS.get(t,'🏳')} {t}" for t in top_n["team"]],
         orientation="h",
         marker_color="#f5c518",
-        text=[f"{v}%" for v in top10["pct_win_title"]],
+        text=[f"{v}%" for v in top_n["pct_win_title"]],
         textposition="outside",
     ))
     fig1.update_layout(
-        title="Top 10 — Probability of Winning the World Cup",
+        title=f"Top {min(10, n_teams)} — Probability of Winning the World Cup ({stage_label} Simulation)",
         xaxis_title="Win Probability (%)",
         yaxis_title="",
         plot_bgcolor="white",
@@ -1820,93 +1974,88 @@ def show_knockout():
     )
     fig1.update_xaxes(showgrid=True, gridcolor="#f1f5f9")
     st.plotly_chart(fig1, use_container_width=True)
-    st.markdown("""
+    st.markdown(f"""
     <div style="background:#f8fafc;border-left:3px solid #f5c518;border-radius:0 8px 8px 0;padding:18px 24px;margin-top:8px;margin-bottom:24px">
         <div style="font-size:12px;font-weight:800;color:#0d1b2a;margin-bottom:6px;letter-spacing:1px">HOW TO READ</div>
         <div style="font-size:14px;color:#374151;line-height:1.8">
-            Each bar shows the percentage of 10,000 simulated tournaments that a team won outright.
-            Argentina and France dominate — the model rates them significantly above the rest of the field based on FIFA rankings, recent form, and head-to-head history.
+            Each bar shows the percentage of 10,000 simulated tournaments that a team won outright, starting from the {stage_label}.
             A longer bar means greater model confidence in that team's title chances.
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-    # Chart 2: R32 elimination risk
+    # Chart 2: Elimination risk at current stage
     st.markdown("<div style='margin-top:48px'></div>", unsafe_allow_html=True)
+    exit_col = "pct_exit_R16" if use_r16 else "pct_exit_R32"
+    elim_label = "R16" if use_r16 else "R32"
+    bottom = active_mc.nlargest(len(active_mc), exit_col).iloc[::-1]
 
-    bottom = mc.nlargest(32, "pct_exit_R32").iloc[::-1]
+    def elim_color(v):
+        if v >= 65: return "#ef4444"
+        if v >= 40: return "#f5c518"
+        return "#22c55e"
 
-    def r32_color(v):
-        if v >= 65: return "#ef4444"    # red — likely eliminated
-        if v >= 40: return "#f5c518"    # yellow — plausible either way
-        return "#22c55e"                # green — likely to advance
-
-    bar_colors = [r32_color(v) for v in bottom["pct_exit_R32"]]
+    bar_colors = [elim_color(v) for v in bottom[exit_col]]
 
     fig2 = go.Figure(go.Bar(
-        x=bottom["pct_exit_R32"],
+        x=bottom[exit_col],
         y=[f"{FLAGS.get(t,'🏳')} {t}" for t in bottom["team"]],
         orientation="h",
         marker_color=bar_colors,
-        text=[f"{v}%" for v in bottom["pct_exit_R32"]],
+        text=[f"{v}%" for v in bottom[exit_col]],
         textposition="outside",
     ))
     fig2.update_layout(
-        title="R32 Elimination Risk — All 32 Teams",
-        xaxis_title="% Eliminated in R32 (across 10,000 simulations)",
+        title=f"{elim_label} Elimination Risk — All {len(active_mc)} Teams",
+        xaxis_title=f"% Eliminated in {elim_label} (across 10,000 simulations)",
         yaxis_title="",
         plot_bgcolor="white",
         paper_bgcolor="white",
         font=dict(family="Inter, sans-serif", color="#0d1b2a"),
         margin=dict(l=20, r=80, t=50, b=20),
-        height=700,
+        height=max(400, len(active_mc) * 28),
     )
     fig2.update_xaxes(showgrid=True, gridcolor="#f1f5f9", range=[0, 105])
     st.plotly_chart(fig2, use_container_width=True)
 
-    st.markdown("""
+    st.markdown(f"""
     <div style="background:#f8fafc;border-left:3px solid #94a3b8;border-radius:0 8px 8px 0;padding:18px 24px;margin-top:8px;margin-bottom:16px">
         <div style="font-size:12px;font-weight:800;color:#0d1b2a;margin-bottom:6px;letter-spacing:1px">HOW TO READ</div>
         <div style="font-size:14px;color:#374151;line-height:1.8">
             <span style="color:#ef4444;font-weight:700">Red</span> = likely eliminated (65%+ chance) &nbsp;·&nbsp;
             <span style="color:#d97706;font-weight:700">Yellow</span> = genuinely contested &nbsp;·&nbsp;
             <span style="color:#16a34a;font-weight:700">Green</span> = expected to advance comfortably.<br><br>
-            Each bar shows how often a team was knocked out in the Round of 32 across all simulations.
-            A bar close to 100% means the model sees them as very likely to lose their opening match.
-            Shorter bars belong to stronger teams who advance more often — so this chart is essentially the inverse of the title probability chart.
-        </div>
-    </div>
-    <div style="background:#f8fafc;border-left:3px solid #f5c518;border-radius:0 8px 8px 0;padding:18px 24px;margin-top:16px;margin-bottom:56px">
-        <div style="font-size:12px;font-weight:800;color:#0d1b2a;margin-bottom:6px;letter-spacing:1px">KEY INSIGHT</div>
-        <div style="font-size:14px;color:#374151;line-height:1.8">
-            Congo DR, Sweden, and Paraguay face near-certain elimination.
-            The yellow band — Canada, South Africa, Morocco, Portugal — is where the real R32 drama lives.
-            England, France, and Argentina are almost certain to make it through.
+            Each bar shows how often a team was knocked out in the {elim_label} across all simulations.
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-    # Chart 3: Stage progression stacked bar (top 12 teams)
+    # Chart 3: Exit distribution
     st.markdown("<div style='margin-top:56px'></div>", unsafe_allow_html=True)
-    top12 = mc.nlargest(12, "pct_win_title").iloc[::-1]
-    stage_cols  = ["pct_exit_R32", "pct_exit_R16", "pct_exit_QF", "pct_Third", "pct_Fourth", "pct_Final",  "pct_Winner"]
-    stage_names = ["Out R32",      "Out R16",       "Out QF",      "3rd Place", "4th Place",  "Runner-Up",  "Winner"]
-    colors      = ["#e2e8f0",      "#cbd5e1",       "#94a3b8",     "#60a5fa",   "#3b82f6",    "#f5c518",    "#0d1b2a"]
+    top_n2 = active_mc.nlargest(min(12, n_teams), "pct_win_title").iloc[::-1]
+    if use_r16:
+        stage_cols  = ["pct_exit_R16", "pct_exit_QF", "pct_Third", "pct_Fourth", "pct_Final", "pct_Winner"]
+        stage_names = ["Out R16",      "Out QF",       "3rd Place", "4th Place",  "Runner-Up", "Winner"]
+        colors_list = ["#cbd5e1",      "#94a3b8",      "#60a5fa",   "#3b82f6",    "#f5c518",   "#0d1b2a"]
+    else:
+        stage_cols  = ["pct_exit_R32", "pct_exit_R16", "pct_exit_QF", "pct_Third", "pct_Fourth", "pct_Final",  "pct_Winner"]
+        stage_names = ["Out R32",      "Out R16",       "Out QF",      "3rd Place", "4th Place",  "Runner-Up",  "Winner"]
+        colors_list = ["#e2e8f0",      "#cbd5e1",       "#94a3b8",     "#60a5fa",   "#3b82f6",    "#f5c518",    "#0d1b2a"]
 
     fig3 = go.Figure()
-    for col, name, color in zip(stage_cols, stage_names, colors):
-        if col in top12.columns:
+    for col, name, color in zip(stage_cols, stage_names, colors_list):
+        if col in top_n2.columns:
             fig3.add_trace(go.Bar(
                 name=name,
-                y=[f"{FLAGS.get(t,'🏳')} {t}" for t in top12["team"]],
-                x=top12[col],
+                y=[f"{FLAGS.get(t,'🏳')} {t}" for t in top_n2["team"]],
+                x=top_n2[col],
                 orientation="h",
                 marker_color=color,
             ))
 
     fig3.update_layout(
         barmode="stack",
-        title="Tournament Exit Distribution — Top 12 Teams (% of 10,000 simulations)",
+        title=f"Tournament Exit Distribution — Top {min(12, n_teams)} Teams (% of 10,000 simulations, from {stage_label})",
         xaxis_title="% of Simulations",
         yaxis_title="",
         plot_bgcolor="white",
@@ -1925,15 +2074,6 @@ def show_knockout():
             Each bar adds up to 100% — it shows where a team typically <em>exits</em> the tournament across all simulations.
             A large dark segment (Winner) means the model often sees them lifting the trophy.
             A wide gold segment (Runner-Up) means they frequently reach the Final but don't always win.
-            Teams with thin bars were knocked out early in most simulations.
-        </div>
-    </div>
-    <div style="background:#f8fafc;border-left:3px solid #f5c518;border-radius:0 8px 8px 0;padding:18px 24px;margin-top:16px;margin-bottom:56px">
-        <div style="font-size:12px;font-weight:800;color:#0d1b2a;margin-bottom:6px;letter-spacing:1px">KEY INSIGHT</div>
-        <div style="font-size:14px;color:#374151;line-height:1.8">
-            Argentina's bar is dominated by dark (Winner) — when they go deep, they win it.
-            England and Colombia show wide blue segments: they reach the QF or SF often but rarely convert to a title.
-            This gap between <em>reaching late stages</em> and <em>winning</em> is where upset potential lives — and where the model sees the most uncertainty.
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -1949,18 +2089,21 @@ def show_knockout():
     </div>
     """, unsafe_allow_html=True)
 
-    dark_horses = mc[(mc["pct_reach_SF"] >= 10) & (mc["pct_win_title"] <= 5)].sort_values("pct_reach_SF", ascending=False)
-    dh_cols = st.columns(min(len(dark_horses), 4), gap="medium")
-    for col, (_, row) in zip(dh_cols, dark_horses.iterrows()):
-        with col:
-            st.markdown(f"""
-            <div style="background:white;border:1px solid #e2e8f0;border-radius:14px;
-                        padding:20px;text-align:center;box-shadow:0 2px 8px rgba(13,27,42,.06)">
-                <div style="font-size:36px">{FLAGS.get(row['team'],'🏳')}</div>
-                <div style="font-size:14px;font-weight:800;color:#0d1b2a;margin:8px 0 4px">{esc(row['team'])}</div>
-                <div style="font-size:12px;color:#64748b">SF reach: <b style="color:#3b82f6">{row['pct_reach_SF']}%</b></div>
-                <div style="font-size:12px;color:#64748b">Win title: <b style="color:#f5c518">{row['pct_win_title']}%</b></div>
-            </div>""", unsafe_allow_html=True)
+    dark_horses = active_mc[(active_mc["pct_reach_SF"] >= 10) & (active_mc["pct_win_title"] <= 5)].sort_values("pct_reach_SF", ascending=False)
+    dh_cols = st.columns(min(len(dark_horses), 4), gap="medium") if len(dark_horses) else None
+    if dh_cols:
+        for col, (_, row) in zip(dh_cols, dark_horses.iterrows()):
+            with col:
+                st.markdown(f"""
+                <div style="background:white;border:1px solid #e2e8f0;border-radius:14px;
+                            padding:20px;text-align:center;box-shadow:0 2px 8px rgba(13,27,42,.06)">
+                    <div style="font-size:36px">{FLAGS.get(row['team'],'🏳')}</div>
+                    <div style="font-size:14px;font-weight:800;color:#0d1b2a;margin:8px 0 4px">{esc(row['team'])}</div>
+                    <div style="font-size:12px;color:#64748b">SF reach: <b style="color:#3b82f6">{row['pct_reach_SF']}%</b></div>
+                    <div style="font-size:12px;color:#64748b">Win title: <b style="color:#f5c518">{row['pct_win_title']}%</b></div>
+                </div>""", unsafe_allow_html=True)
+    else:
+        st.markdown('<div style="font-size:14px;color:#94a3b8">No dark horses identified from this stage.</div>', unsafe_allow_html=True)
 
     st.markdown('<div style="margin-bottom:48px"></div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
