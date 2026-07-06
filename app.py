@@ -1911,8 +1911,14 @@ def show_knockout():
 
     # ── Decide which MC dataset to use for table + analytics ─────────────────
     use_r16 = (selected_stage == "R16") and Path("data/processed/monte_carlo_r16.csv").exists()
+    show_analytics = selected_stage in ("R32", "R16")
     active_mc = mc16 if use_r16 else mc
     stage_label = "R16" if use_r16 else "R32"
+
+    if not show_analytics:
+        st.markdown('<div style="margin-bottom:48px"></div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+        return
 
     # ── Monte Carlo Results Table ─────────────────────────────────────────────
     st.markdown(f"""
